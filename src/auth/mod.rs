@@ -6,11 +6,13 @@ use crate::error::*;
 use std::net::SocketAddr;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+use async_trait::async_trait;
 use md5::{Digest, Md5};
 use ring::hmac;
 
+#[async_trait]
 pub trait AuthHandler {
-    fn auth_handle(&self, username: &str, realm: &str, src_addr: SocketAddr) -> Result<Vec<u8>>;
+    async fn auth_handle(&self, username: &str, realm: &str, src_addr: SocketAddr) -> Result<Vec<u8>>;
 }
 
 // generate_long_term_credentials can be used to create credentials valid for [duration] time
@@ -46,8 +48,9 @@ pub struct LongTermAuthHandler {
     shared_secret: String,
 }
 
+#[async_trait]
 impl AuthHandler for LongTermAuthHandler {
-    fn auth_handle(&self, username: &str, realm: &str, src_addr: SocketAddr) -> Result<Vec<u8>> {
+    async fn auth_handle(&self, username: &str, realm: &str, src_addr: SocketAddr) -> Result<Vec<u8>> {
         log::trace!(
             "Authentication username={} realm={} src_addr={}",
             username,

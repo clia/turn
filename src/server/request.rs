@@ -202,7 +202,7 @@ impl Request {
             &username_attr.to_string(),
             &realm_attr.to_string(),
             self.src_addr,
-        ) {
+        ).await {
             Ok(key) => key,
             Err(_) => {
                 build_and_send_err(

@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;
 use std::sync::Arc;
+use async_trait::async_trait;
 use tokio::net::UdpSocket;
 use tokio::signal;
 use tokio::time::Duration;
@@ -23,8 +24,9 @@ impl MyAuthHandler {
     }
 }
 
+#[async_trait]
 impl AuthHandler for MyAuthHandler {
-    fn auth_handle(
+    async fn auth_handle(
         &self,
         username: &str,
         _realm: &str,

@@ -8,6 +8,7 @@ use crate::relay::relay_static::*;
 use crate::relay::relay_none::RelayAddressGeneratorNone;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::str::FromStr;
+use async_trait::async_trait;
 use tokio::net::UdpSocket;
 use tokio::sync::mpsc;
 use util::{vnet::router::Nic, vnet::*};
@@ -28,8 +29,9 @@ impl TestAuthHandler {
     }
 }
 
+#[async_trait]
 impl AuthHandler for TestAuthHandler {
-    fn auth_handle(&self, username: &str, _realm: &str, _src_addr: SocketAddr) -> Result<Vec<u8>> {
+    async fn auth_handle(&self, username: &str, _realm: &str, _src_addr: SocketAddr) -> Result<Vec<u8>> {
         if let Some(pw) = self.cred_map.get(username) {
             Ok(pw.to_vec())
         } else {
