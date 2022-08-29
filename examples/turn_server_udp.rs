@@ -1,7 +1,7 @@
-use turn::auth::*;
-use turn::relay::relay_static::*;
-use turn::server::{config::*, *};
-use turn::Error;
+use clia_turn::auth::*;
+use clia_turn::relay::relay_static::*;
+use clia_turn::server::{config::*, *};
+use clia_turn::Error;
 
 use clap::{App, AppSettings, Arg};
 use std::collections::HashMap;

@@ -1,5 +1,5 @@
-use turn::client::*;
-use turn::Error;
+use clia_turn::client::*;
+use clia_turn::Error;
 
 use clap::{App, AppSettings, Arg};
 use std::sync::Arc;

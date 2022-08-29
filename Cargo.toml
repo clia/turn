@@ -1,13 +1,13 @@
 [package]
-name = "turn"
+name = "clia-turn"
 version = "0.5.4"
-authors = ["Rain Liu <yliu@webrtc.rs>"]
+authors = ["Rain Liu <yliu@webrtc.rs>", "Cris Liao <clia@163.com>"]
 edition = "2018"
-description = "A pure Rust implementation of TURN"
+description = "A temporary personal webrtc-rs turn mod, support async AuthHandler."
 license = "MIT/Apache-2.0"
-documentation = "https://docs.rs/turn"
+documentation = "https://docs.rs/clia-turn"
 homepage = "https://webrtc.rs"
-repository = "https://github.com/webrtc-rs/turn"
+repository = "https://github.com/clia/turn"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

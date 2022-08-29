@@ -2,10 +2,10 @@ use criterion::{criterion_group, criterion_main, Criterion};
 use std::time::Duration;
 use stun::attributes::ATTR_DATA;
 use stun::message::{Getter, Message, Setter};
-use turn::proto::chandata::ChannelData;
-use turn::proto::channum::{ChannelNumber, MIN_CHANNEL_NUMBER};
-use turn::proto::data::Data;
-use turn::proto::lifetime::Lifetime;
+use clia_turn::proto::chandata::ChannelData;
+use clia_turn::proto::channum::{ChannelNumber, MIN_CHANNEL_NUMBER};
+use clia_turn::proto::data::Data;
+use clia_turn::proto::lifetime::Lifetime;
 
 fn benchmark_chan_data(c: &mut Criterion) {
     {
