@@ -73,7 +73,10 @@ impl RelayAddressGenerator for RelayAddressGeneratorRanges {
                 .await?;
             let conn = match self.net.bind(addr).await {
                 Ok(conn) => conn,
-                Err(_) => continue,
+                Err(err) => {
+                    log::info!("bind net addr error: {}, addr: {}", err, addr);
+                    continue;
+                }
             };
 
             let mut relay_addr = conn.local_addr().await?;

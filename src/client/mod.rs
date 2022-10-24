@@ -225,13 +225,32 @@ impl ClientInternal {
             let mut buf = vec![0u8; MAX_DATA_BUFFER_SIZE];
             loop {
                 //TODO: gracefully exit loop
-                let (n, from) = match conn.recv_from(&mut buf).await {
-                    Ok((n, from)) => (n, from),
-                    Err(err) => {
-                        log::debug!("exiting read loop: {}", err);
+                // Temporary fix: timeout for read.
+                let timeout = tokio::time::sleep(std::time::Duration::from_secs(10));
+                tokio::pin!(timeout);
+                let (n, from) = tokio::select! {
+                    _ = timeout.as_mut() =>{
+                        log::debug!("timeout reading, exiting read loop");
                         break;
                     }
+                    result = conn.recv_from(&mut buf)=> {
+                        match result {
+                            Ok((n, from)) => (n, from),
+                            Err(err) => {
+                                log::debug!("exiting read loop: {}", err);
+                                break;
+                            }
+                        }
+                    }
                 };
+                
+                // let (n, from) = match conn.recv_from(&mut buf).await {
+                //     Ok((n, from)) => (n, from),
+                //     Err(err) => {
+                //         log::debug!("exiting read loop: {}", err);
+                //         break;
+                //     }
+                // };
 
                 log::debug!("received {} bytes of udp from {}", n, from);
 
