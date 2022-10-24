@@ -1,14 +1,13 @@
 use super::*;
 use crate::relay::relay_none::*;
 
-use util::vnet::net::*;
-
-use std::net::IpAddr;
-use std::str::FromStr;
-
 use async_trait::async_trait;
-use tokio::net::UdpSocket;
-use tokio::time::{Duration, Instant};
+use std::{net::IpAddr, str::FromStr};
+use tokio::{
+    net::UdpSocket,
+    time::{Duration, Instant},
+};
+use util::vnet::net::*;
 
 const STATIC_KEY: &str = "ABC";
 
@@ -54,6 +53,7 @@ async fn test_allocation_lifetime_overflow() -> Result<()> {
 }
 
 struct TestAuthHandler;
+
 #[async_trait]
 impl AuthHandler for TestAuthHandler {
     async fn auth_handle(&self, _username: &str, _realm: &str, _src_addr: SocketAddr) -> Result<Vec<u8>> {
@@ -95,6 +95,7 @@ async fn test_allocation_lifetime_deletion_zero_lifetime() -> Result<()> {
             Arc::clone(&r.conn),
             0,
             Duration::from_secs(3600),
+            TextAttribute::new(ATTR_USERNAME, "user".into()),
         )
         .await?;
     assert!(r

@@ -7,7 +7,6 @@ use std::net::IpAddr;
 use tokio::net::UdpSocket;
 use tokio::time::Duration;
 
-use async_trait::async_trait;
 use util::vnet::net::*;
 
 async fn create_listening_test_client(rto_in_ms: u16) -> Result<Client> {
@@ -120,6 +119,7 @@ async fn test_client_with_stun_send_binding_request_to_timeout() -> Result<()> {
 }
 
 struct TestAuthHandler;
+
 #[async_trait]
 impl AuthHandler for TestAuthHandler {
     async fn auth_handle(&self, username: &str, realm: &str, _src_addr: SocketAddr) -> Result<Vec<u8>> {

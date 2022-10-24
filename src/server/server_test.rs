@@ -6,9 +6,9 @@ use crate::error::*;
 use crate::relay::relay_static::*;
 
 use crate::relay::relay_none::RelayAddressGeneratorNone;
+use async_trait::async_trait;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::str::FromStr;
-use async_trait::async_trait;
 use tokio::net::UdpSocket;
 use tokio::sync::mpsc;
 use util::{vnet::router::Nic, vnet::*};

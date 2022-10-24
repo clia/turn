@@ -66,17 +66,14 @@ impl RelayAddressGenerator for RelayAddressGeneratorRanges {
         }
 
         for _ in 0..max_retries {
-            let port = self.min_port + rand::random::<u16>() % (self.max_port + 1 - self.min_port);
+            let port = self.min_port + rand::random::<u16>() % (self.max_port - self.min_port + 1);
             let addr = self
                 .net
                 .resolve_addr(use_ipv4, &format!("{}:{}", self.address, port))
                 .await?;
             let conn = match self.net.bind(addr).await {
                 Ok(conn) => conn,
-                Err(err) => {
-                    log::info!("bind net addr error: {}, addr: {}", err, addr);
-                    continue;
-                }
+                Err(_) => continue,
             };
 
             let mut relay_addr = conn.local_addr().await?;

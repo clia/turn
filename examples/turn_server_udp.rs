@@ -3,12 +3,12 @@ use clia_turn::relay::relay_static::*;
 use clia_turn::server::{config::*, *};
 use clia_turn::Error;
 
+use async_trait::async_trait;
 use clap::{App, AppSettings, Arg};
 use std::collections::HashMap;
 use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;
 use std::sync::Arc;
-use async_trait::async_trait;
 use tokio::net::UdpSocket;
 use tokio::signal;
 use tokio::time::Duration;
@@ -41,7 +41,7 @@ impl AuthHandler for MyAuthHandler {
     }
 }
 
-// RUST_LOG=trace cargo run --color=always --package webrtc-turn --example turn_server_udp -- --public-ip 0.0.0.0 --users user=pass
+// RUST_LOG=trace cargo run --color=always --package turn --example turn_server_udp -- --public-ip 0.0.0.0 --users user=pass
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
