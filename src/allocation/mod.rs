@@ -279,7 +279,8 @@ log::info!("stop recieved: five_tuple: {:?}", five_tuple);
                             if let Some(allocs) = &allocations{
                                 let mut alls = allocs.lock().await;
                                 if let Some(a) = alls.remove(&five_tuple) {
-                                    let _ = a.close().await;
+                                    let res = a.close().await;
+log::info!("allocation close result: {:?}, five_tuple: {:?}", res, five_tuple);
                                 }
                             }    
                             done = true;
