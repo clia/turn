@@ -217,9 +217,11 @@ impl Allocation {
         if self.closed.load(Ordering::Acquire) {
             return Err(Error::ErrClosed);
         }
+log::info!("self.closed.loaded.");
 
         self.closed.store(true, Ordering::Release);
         self.stop();
+log::info!("self.stopped.");
 
         {
             let mut permissions = self.permissions.lock().await;
@@ -227,6 +229,7 @@ impl Allocation {
                 p.stop();
             }
         }
+log::info!("p.stopped.");
 
         {
             let mut channel_bindings = self.channel_bindings.lock().await;
@@ -234,11 +237,15 @@ impl Allocation {
                 c.stop();
             }
         }
+log::info!("c.stopped.");
 
         log::trace!("allocation with {} closed!", self.five_tuple);
+log::info!("allocation with {} closed!", self.five_tuple);
 
         let _ = self.turn_socket.close().await;
+log::info!("self.turn_socket.closed.");
         let _ = self.relay_socket.close().await;
+log::info!("self.relay_socket.closed");
 
         Ok(())
     }
