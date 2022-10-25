@@ -347,16 +347,43 @@ log::info!("stop recieved: five_tuple: {:?}", five_tuple);
             let mut buffer = vec![0u8; RTP_MTU];
 
             loop {
-                let (n, src_addr) = match relay_socket.recv_from(&mut buffer).await {
-                    Ok((n, src_addr)) => (n, src_addr),
-                    Err(_) => {
-                        if let Some(allocs) = &allocations {
-                            let mut alls = allocs.lock().await;
-                            alls.remove(&five_tuple);
+                let timeout = tokio::time::sleep(std::time::Duration::from_secs(10));
+                tokio::pin!(timeout);
+
+                let (n, src_addr) = tokio::select! {
+                    _ = timeout.as_mut() =>{
+                        log::debug!("timeout reading. five_tuple: {:?}", five_tuple);
+                        if Arc::strong_count(&relay_socket) == 1 {
+                            log::debug!("allocation has stopped, stop packet_handler. five_tuple: {:?}", five_tuple);
+                            break;
+                        } else {
+                            continue;
                         }
-                        break;
+                    }
+                    result = relay_socket.recv_from(&mut buffer) => {
+                        match result {
+                            Ok((n, src_addr)) => (n, src_addr),
+                            Err(_) => {
+                                if let Some(allocs) = &allocations {
+                                    let mut alls = allocs.lock().await;
+                                    alls.remove(&five_tuple);
+                                }
+                                break;
+                            }
+                        }
                     }
                 };
+
+                // let (n, src_addr) = match relay_socket.recv_from(&mut buffer).await {
+                //     Ok((n, src_addr)) => (n, src_addr),
+                //     Err(_) => {
+                //         if let Some(allocs) = &allocations {
+                //             let mut alls = allocs.lock().await;
+                //             alls.remove(&five_tuple);
+                //         }
+                //         break;
+                //     }
+                // };
 
                 log::debug!(
                     "relay socket {:?} received {} bytes from {}",
