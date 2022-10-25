@@ -452,6 +452,7 @@ log::info!("stop recieved: five_tuple: {:?}", five_tuple);
                     }
                 }
             }
+log::info!("exit packet_handler loop. a count: strong: {}, weak: {}", Arc::strong_count(&relay_socket), Arc::weak_count(&relay_socket));
         });
     }
 }
