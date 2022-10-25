@@ -28,3 +28,9 @@
 <p align="center">
  A pure Rust implementation of TURN. Rewrite <a href="https://github.com/pion/turn/releases/tag/v2.0.5">Pion</a> TURN in Rust
 </p>
+
+## Changelog
+
+Version 0.6.1
+
+- Fix server relay UDP port not release problem.
