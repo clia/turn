@@ -352,9 +352,9 @@ log::info!("stop recieved: five_tuple: {:?}", five_tuple);
 
                 let (n, src_addr) = tokio::select! {
                     _ = timeout.as_mut() =>{
-                        log::debug!("timeout reading. five_tuple: {:?}", five_tuple);
-                        if Arc::strong_count(&relay_socket) == 1 {
-                            log::debug!("allocation has stopped, stop packet_handler. five_tuple: {:?}", five_tuple);
+                        log::info!("timeout reading. five_tuple: {:?}, a count: {}", five_tuple, Arc::strong_count(&relay_socket));
+                        if Arc::strong_count(&relay_socket) <= 1 {
+                            log::info!("allocation has stopped, stop packet_handler. five_tuple: {:?}", five_tuple);
                             break;
                         } else {
                             continue;
