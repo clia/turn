@@ -283,13 +283,13 @@ log::info!("new lifetime: {:?}", d);
                             timer.as_mut().reset(Instant::now() + d);
                         } else {
 log::info!("stop recieved: five_tuple: {:?}", five_tuple);
-                            if let Some(allocs) = &allocations{
-                                let mut alls = allocs.lock().await;
-                                if let Some(a) = alls.remove(&five_tuple) {
-                                    let res = a.close().await;
-log::info!("allocation close result: {:?}, five_tuple: {:?}", res, five_tuple);
-                                }
-                            }    
+//                             if let Some(allocs) = &allocations{
+//                                 let mut alls = allocs.lock().await;
+//                                 if let Some(a) = alls.remove(&five_tuple) {
+//                                     let res = a.close().await;
+// log::info!("allocation close result: {:?}, five_tuple: {:?}", res, five_tuple);
+//                                 }
+//                             }    
                             done = true;
                         }
                     },
