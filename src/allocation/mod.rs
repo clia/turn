@@ -260,7 +260,7 @@ log::info!("allcation lifetime start: five_tuple: {:?}", five_tuple);
             while !done {
                 tokio::select! {
                     _ = &mut timer => {
-log::info!("allcation lifetime exceeded: five_tuple: {:?}", five_tuple);
+log::info!("allocation lifetime exceeded: five_tuple: {:?}", five_tuple);
                         if let Some(allocs) = &allocations{
                             let mut alls = allocs.lock().await;
                             if let Some(a) = alls.remove(&five_tuple) {
@@ -275,6 +275,13 @@ log::info!("allocation lifetime reset: five_tuple: {:?}", five_tuple);
 log::info!("new lifetime: {:?}", d);
                             timer.as_mut().reset(Instant::now() + d);
                         } else {
+log::info!("stop recieved: five_tuple: {:?}", five_tuple);
+                            if let Some(allocs) = &allocations{
+                                let mut alls = allocs.lock().await;
+                                if let Some(a) = alls.remove(&five_tuple) {
+                                    let _ = a.close().await;
+                                }
+                            }    
                             done = true;
                         }
                     },
