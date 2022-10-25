@@ -243,9 +243,9 @@ log::info!("c.stopped.");
 log::info!("allocation with {} closed!", self.five_tuple);
 
         let _ = self.turn_socket.close().await;
-log::info!("self.turn_socket.closed.");
+log::info!("self.turn_socket.closed. a count: strong: {}, weak: {}", Arc::strong_count(&self.turn_socket), Arc::weak_count(&self.turn_socket));
         let _ = self.relay_socket.close().await;
-log::info!("self.relay_socket.closed");
+log::info!("self.relay_socket.closed. a count: strong: {}, weak: {}", Arc::strong_count(&self.relay_socket), Arc::weak_count(&self.relay_socket));
 
         Ok(())
     }
