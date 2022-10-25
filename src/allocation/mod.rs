@@ -250,6 +250,7 @@ impl Allocation {
         let allocations = self.allocations.clone();
         let five_tuple = self.five_tuple;
         let timer_expired = Arc::clone(&self.timer_expired);
+log::info!("allcation lifetime start: five_tuple: {:?}", five_tuple);
 
         tokio::spawn(async move {
             let timer = tokio::time::sleep(lifetime);
@@ -259,6 +260,7 @@ impl Allocation {
             while !done {
                 tokio::select! {
                     _ = &mut timer => {
+log::info!("allcation lifetime exceeded: five_tuple: {:?}", five_tuple);
                         if let Some(allocs) = &allocations{
                             let mut alls = allocs.lock().await;
                             if let Some(a) = alls.remove(&five_tuple) {
@@ -268,7 +270,9 @@ impl Allocation {
                         done = true;
                     },
                     result = reset_rx.recv() => {
+log::info!("allocation lifetime reset: five_tuple: {:?}", five_tuple);
                         if let Some(d) = result {
+log::info!("new lifetime: {:?}", d);
                             timer.as_mut().reset(Instant::now() + d);
                         } else {
                             done = true;
