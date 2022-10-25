@@ -116,7 +116,6 @@ impl Manager {
         let allocation = self.allocations.lock().await.remove(five_tuple);
 
         if let Some(a) = allocation {
-log::info!("delete_allocation a count: strong: {}, weak: {}", Arc::strong_count(&a), Arc::weak_count(&a));
             if let Err(err) = a.close().await {
                 log::error!("Failed to close allocation: {}", err);
             }

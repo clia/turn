@@ -217,11 +217,9 @@ impl Allocation {
         if self.closed.load(Ordering::Acquire) {
             return Err(Error::ErrClosed);
         }
-log::info!("self.closed.loaded.");
 
         self.closed.store(true, Ordering::Release);
         self.stop();
-log::info!("self.stopped.");
 
         {
             let mut permissions = self.permissions.lock().await;
@@ -229,7 +227,6 @@ log::info!("self.stopped.");
                 p.stop();
             }
         }
-log::info!("p.stopped.");
 
         {
             let mut channel_bindings = self.channel_bindings.lock().await;
@@ -237,15 +234,11 @@ log::info!("p.stopped.");
                 c.stop();
             }
         }
-log::info!("c.stopped.");
 
         log::trace!("allocation with {} closed!", self.five_tuple);
-log::info!("allocation with {} closed!", self.five_tuple);
 
         let _ = self.turn_socket.close().await;
-log::info!("self.turn_socket.closed. a count: strong: {}, weak: {}", Arc::strong_count(&self.turn_socket), Arc::weak_count(&self.turn_socket));
         let _ = self.relay_socket.close().await;
-log::info!("self.relay_socket.closed. a count: strong: {}, weak: {}", Arc::strong_count(&self.relay_socket), Arc::weak_count(&self.relay_socket));
 
         Ok(())
     }
@@ -257,7 +250,6 @@ log::info!("self.relay_socket.closed. a count: strong: {}, weak: {}", Arc::stron
         let allocations = self.allocations.clone();
         let five_tuple = self.five_tuple;
         let timer_expired = Arc::clone(&self.timer_expired);
-log::info!("allcation lifetime start: five_tuple: {:?}", five_tuple);
 
         tokio::spawn(async move {
             let timer = tokio::time::sleep(lifetime);
@@ -267,7 +259,6 @@ log::info!("allcation lifetime start: five_tuple: {:?}", five_tuple);
             while !done {
                 tokio::select! {
                     _ = &mut timer => {
-log::info!("allocation lifetime exceeded: five_tuple: {:?}", five_tuple);
                         if let Some(allocs) = &allocations{
                             let mut alls = allocs.lock().await;
                             if let Some(a) = alls.remove(&five_tuple) {
@@ -277,19 +268,9 @@ log::info!("allocation lifetime exceeded: five_tuple: {:?}", five_tuple);
                         done = true;
                     },
                     result = reset_rx.recv() => {
-log::info!("allocation lifetime reset: five_tuple: {:?}", five_tuple);
                         if let Some(d) = result {
-log::info!("new lifetime: {:?}", d);
                             timer.as_mut().reset(Instant::now() + d);
                         } else {
-log::info!("stop recieved: five_tuple: {:?}", five_tuple);
-//                             if let Some(allocs) = &allocations{
-//                                 let mut alls = allocs.lock().await;
-//                                 if let Some(a) = alls.remove(&five_tuple) {
-//                                     let res = a.close().await;
-// log::info!("allocation close result: {:?}, five_tuple: {:?}", res, five_tuple);
-//                                 }
-//                             }    
                             done = true;
                         }
                     },
@@ -352,9 +333,8 @@ log::info!("stop recieved: five_tuple: {:?}", five_tuple);
 
                 let (n, src_addr) = tokio::select! {
                     _ = timeout.as_mut() =>{
-                        log::info!("timeout reading. five_tuple: {:?}, a count: {}", five_tuple, Arc::strong_count(&relay_socket));
                         if Arc::strong_count(&relay_socket) <= 1 {
-                            log::info!("allocation has stopped, stop packet_handler. five_tuple: {:?}", five_tuple);
+                            log::debug!("allocation has stopped, stop packet_handler. five_tuple: {:?}", five_tuple);
                             break;
                         } else {
                             continue;
@@ -479,7 +459,6 @@ log::info!("stop recieved: five_tuple: {:?}", five_tuple);
                     }
                 }
             }
-log::info!("exit packet_handler loop. a count: strong: {}, weak: {}", Arc::strong_count(&relay_socket), Arc::weak_count(&relay_socket));
         });
     }
 }
