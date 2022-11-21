@@ -357,17 +357,6 @@ impl Allocation {
                     }
                 };
 
-                // let (n, src_addr) = match relay_socket.recv_from(&mut buffer).await {
-                //     Ok((n, src_addr)) => (n, src_addr),
-                //     Err(_) => {
-                //         if let Some(allocs) = &allocations {
-                //             let mut alls = allocs.lock().await;
-                //             alls.remove(&five_tuple);
-                //         }
-                //         break;
-                //     }
-                // };
-
                 log::debug!(
                     "relay socket {:?} received {} bytes from {}",
                     relay_socket.local_addr().await,
