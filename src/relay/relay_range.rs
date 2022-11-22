@@ -60,7 +60,7 @@ impl RelayAddressGenerator for RelayAddressGeneratorRanges {
                 .resolve_addr(use_ipv4, &format!("{}:{}", self.address, requested_port))
                 .await?;
             let conn = self.net.bind(addr).await?;
-            let mut relay_addr = conn.local_addr().await?;
+            let mut relay_addr = conn.local_addr()?;
             relay_addr.set_ip(self.relay_address);
             return Ok((conn, relay_addr));
         }
@@ -73,13 +73,10 @@ impl RelayAddressGenerator for RelayAddressGeneratorRanges {
                 .await?;
             let conn = match self.net.bind(addr).await {
                 Ok(conn) => conn,
-                Err(err) => {
-                    log::info!("bind net addr error: {}, addr: {}", err, addr);
-                    continue;
-                }
+                Err(_) => continue,
             };
 
-            let mut relay_addr = conn.local_addr().await?;
+            let mut relay_addr = conn.local_addr()?;
             relay_addr.set_ip(self.relay_address);
             return Ok((conn, relay_addr));
         }
