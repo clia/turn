@@ -27,6 +27,7 @@ fn new_test_manager() -> Manager {
             address: "0.0.0.0".to_owned(),
             net: Arc::new(Net::new(None)),
         }),
+        alloc_close_notify: None,
     };
     Manager::new(config)
 }
@@ -415,6 +416,7 @@ async fn create_server() -> Result<(Server, u16)> {
         realm: "webrtc.rs".to_owned(),
         auth_handler: Arc::new(TestAuthHandler {}),
         channel_bind_timeout: Duration::from_secs(0),
+        alloc_close_notify: None,
     })
     .await?;
 

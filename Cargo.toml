@@ -1,6 +1,6 @@
 [package]
 name = "clia-turn"
-version = "0.6.1"
+version = "0.6.2"
 authors = ["Rain Liu <yliu@webrtc.rs>", "Cris Liao <clia@163.com>"]
 edition = "2018"
 description = "A temporary personal webrtc-rs turn mod, support async AuthHandler."

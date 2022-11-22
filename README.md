@@ -6,8 +6,9 @@ It has no relation to [webrtc-rs](https://github.com/webrtc-rs/) authors.
 
 ## Changelog
 
-Unreleased
+Version 0.6.2
 
+- Add `alloc_close_notify` for app to easily count traffic metrics data.
 - Merge upstream 0.6.1 code date 2022-11-22.
 
 Version 0.6.1
